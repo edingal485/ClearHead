@@ -17,7 +17,7 @@
 <style>
 :root{
   --bg:#eef0f5;--surface:#ffffff;--surface-2:#f6f7fa;--ink:#192448;--body:#4c4c4d;--muted:#6b716d;
-  --line:#e2e5ec;--orange:#ef8a2c;--orange-ink:#a8520a;--orange-soft:#fdf1e4;--green:#18c687;--logo-ink:#231f20;
+  --line:#e2e5ec;--orange:#ef8a2c;--orange-ink:#a8520a;--orange-soft:#fdf1e4;--green:#18c687;--logo-ink:#231f20;--accent:#ef8a2c;--accent-ink:#ffffff;
   --shadow:0 1px 2px rgba(25,36,72,.05),0 10px 30px rgba(25,36,72,.06);
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
 }
@@ -55,10 +55,10 @@ h1,h2,h3{color:var(--ink);margin:0;font-weight:600;line-height:1.15}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
 /* buttons */
-.btn{border:2px solid transparent;background:var(--orange);color:#fff;font-weight:600;border-radius:8px;padding:8px 14px;font-size:14px;transition:background .3s ease-in-out,color .3s ease-in-out,border-color .3s ease-in-out}
-.btn:hover{background:transparent;color:var(--orange-ink);border-color:var(--orange)}
+.btn{border:2px solid transparent;background:var(--accent);color:var(--accent-ink);font-weight:600;border-radius:8px;padding:8px 14px;font-size:14px;transition:background .3s ease-in-out,color .3s ease-in-out,border-color .3s ease-in-out}
+.btn:hover{background:transparent;color:var(--ink);border-color:var(--accent)}
 .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn.ghost:hover{border-color:var(--orange);color:var(--orange-ink)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--ink)}
 .btn.small{padding:4px 10px;font-size:13px;border-width:1px}
 .btn:disabled{opacity:.55;cursor:progress}
 body:not(.ai-on) .ai-only{display:none!important}
@@ -112,7 +112,7 @@ textarea{width:100%;min-height:120px;resize:vertical;border:1px solid var(--line
 .ring{position:relative;width:132px;height:132px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring .track{stroke:var(--line)}
-.ring .bar{stroke:var(--orange);transition:stroke-dashoffset 1s linear}
+.ring .bar{stroke:var(--accent);transition:stroke-dashoffset 1s linear}
 .ring .time{position:absolute;inset:0;display:grid;place-items:center;font-size:26px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
 .tctl{display:grid;gap:10px;min-width:0}
 .tctl select{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:8px 10px}
@@ -183,6 +183,10 @@ dialog::backdrop{background:rgba(15,24,50,.45)}
 .setform .sub{margin:0}
 .setform label{font-size:13px;font-weight:500;color:var(--ink)}
 .setform input,.setform select{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:9px 12px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.swatch{width:34px;height:34px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);padding:0}
+.swatch[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+.swatches input[type=color]{width:42px;height:34px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);cursor:pointer}
 @media (max-width:900px){.grid{grid-template-columns:1fr}.today{padding:20px}}
 @media (max-width:560px){.task{grid-template-columns:auto minmax(0,1fr)}.tact{grid-column:2;opacity:1}.now .ttext{font-size:17px}}
 @media (max-width:420px){.timer{grid-template-columns:1fr;justify-items:center}.tctl{width:100%}.logo{height:42px}.hello{border-left:0;padding-left:0}}
@@ -314,8 +318,19 @@ dialog::backdrop{background:rgba(15,24,50,.45)}
   </div>
 </div>
 <dialog id="settings" aria-labelledby="setH">
-  <form method="dialog" class="setform">
-    <h2 id="setH">Settings</h2>
+  <div class="setform">
+    <div class="row" style="justify-content:space-between"><h2 id="setH">Settings</h2><button type="button" class="link" id="closeX" aria-label="Close settings" style="font-size:22px;line-height:1">&times;</button></div>
+    <h3>Accent colour</h3>
+    <p class="sub">Changes the main buttons and the focus timer.</p>
+    <div class="swatches" id="swatches" role="group" aria-label="Accent colour">
+      <button type="button" class="swatch" data-c="#ef8a2c" aria-label="Orange" style="background:#ef8a2c"></button>
+      <button type="button" class="swatch" data-c="#14a39a" aria-label="Teal" style="background:#14a39a"></button>
+      <button type="button" class="swatch" data-c="#1e5bf4" aria-label="Blue" style="background:#1e5bf4"></button>
+      <button type="button" class="swatch" data-c="#7b5cd6" aria-label="Purple" style="background:#7b5cd6"></button>
+      <button type="button" class="swatch" data-c="#18a865" aria-label="Green" style="background:#18a865"></button>
+      <button type="button" class="swatch" data-c="#e0457b" aria-label="Pink" style="background:#e0457b"></button>
+      <input type="color" id="customColour" aria-label="Pick any colour" title="Pick any colour" value="#ef8a2c">
+    </div>
     <h3>AI help</h3>
     <p class="sub">Uses your own Anthropic API key. It is stored in this browser only and sent only to Anthropic. Never put it in your git repo.</p>
     <label for="apiKey">API key</label>
@@ -323,8 +338,8 @@ dialog::backdrop{background:rgba(15,24,50,.45)}
     <label for="model">Model</label>
     <select id="model"><option value="claude-sonnet-5-5">Sonnet 5.5 (best answers)</option><option value="claude-haiku-5-5">Haiku 5.5 (faster, cheaper)</option></select>
     <div class="row"><button type="button" class="btn" id="saveKey">Save key</button><button type="button" class="btn ghost" id="removeKey">Remove key</button></div>
-    <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn ghost" value="close">Close</button></div>
-  </form>
+    <div class="row" style="justify-content:flex-end;margin-top:8px"><button type="button" class="btn ghost" id="closeSettings">Close</button></div>
+  </div>
 </dialog>
 <div class="toast" id="toast" hidden></div>
 
@@ -648,9 +663,27 @@ function makeSample(){
 function applyAI(){sample=lsGet(AKEY)?makeSample():null;document.body.classList.toggle('ai-on',!!sample)}
 applyAI();
 
+/* ---------- accent colour ---------- */
+const CKEY='clearhead.accent';
+function inkFor(hex){const n=parseInt(hex.slice(1),16),c=[n>>16&255,n>>8&255,n&255].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});const L=.2126*c[0]+.7152*c[1]+.0722*c[2];return (1.05/(L+.05))>=(L+.05)/.0623?'#ffffff':'#192448'}
+function applyAccent(hex){
+  if(!/^#[0-9a-f]{6}$/i.test(hex||''))hex='#ef8a2c';
+  const r=document.documentElement.style;r.setProperty('--accent',hex);r.setProperty('--accent-ink',inkFor(hex));
+  document.querySelectorAll('#swatches .swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.c.toLowerCase()===hex.toLowerCase())));
+  $('customColour').value=hex;
+}
+function setAccent(hex){lsSet(CKEY,hex);applyAccent(hex)}
+applyAccent(lsGet(CKEY));
+document.querySelectorAll('#swatches .swatch').forEach(b=>b.addEventListener('click',()=>setAccent(b.dataset.c)));
+$('customColour').addEventListener('input',e=>setAccent(e.target.value));
+
 /* ---------- settings ---------- */
 const dlg=$('settings');
-$('openSettings').addEventListener('click',()=>{$('apiKey').value=lsGet(AKEY);$('model').value=lsGet(MKEY)||'claude-sonnet-5-5';dlg.showModal()});
+$('openSettings').addEventListener('click',()=>{$('apiKey').value=lsGet(AKEY);$('model').value=lsGet(MKEY)||'claude-sonnet-5-5';if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','')});
+function closeSettings(){try{dlg.close()}catch(e){dlg.removeAttribute('open')}}
+$('closeSettings').addEventListener('click',closeSettings);
+$('closeX').addEventListener('click',closeSettings);
+dlg.addEventListener('click',e=>{if(e.target===dlg)closeSettings()});
 $('saveKey').addEventListener('click',()=>{const k=$('apiKey').value.trim();if(!k){toast('Paste your key first.');return}lsSet(AKEY,k);lsSet(MKEY,$('model').value);applyAI();dlg.close();toast('AI help is on.')});
 $('model').addEventListener('change',()=>{if(lsGet(AKEY))lsSet(MKEY,$('model').value)});
 $('removeKey').addEventListener('click',()=>{lsSet(AKEY,'');$('apiKey').value='';applyAI();toast('Key removed. AI help is off.')});
